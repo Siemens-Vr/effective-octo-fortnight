@@ -1,4 +1,4 @@
-name: Deploy HTML Website to Windows Server
+name: Deploy HTML Website to Linux Server
 
 on:
   push:
@@ -15,11 +15,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to Windows Server
+      - name: Deploy to Linux Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASS }}
           source: "."
-          target: "C:/inetpub/wwwroot/my-website"
+          target: "/var/www/html/my-website"  # Adjust path as per your Linux server setup
