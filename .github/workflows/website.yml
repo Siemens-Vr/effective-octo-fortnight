@@ -31,30 +31,28 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASS }}
           script: |
-            # Install Nginx if not present
+            # Install Nginx if not installed
             if ! command -v nginx > /dev/null; then
               sudo apt update
               sudo apt install nginx -y
             fi
 
             # Update Nginx default config
-            sudo bash -c 'cat > /etc/nginx/sites-available/default' <<EOF
-            server {
-                listen 80 default_server;
-                listen [::]:80 default_server;
+            sudo sh -c "echo 'server {
+              listen 80 default_server;
+              listen [::]:80 default_server;
 
-                root /home/${{ secrets.SERVER_USER }}/Documents/website;
-                index index.html;
+              root /home/${{ secrets.SERVER_USER }}/Documents/website;
+              index index.html;
 
-                server_name _;
+              server_name _;
 
-                location / {
-                    try_files \$uri \$uri/ =404;
-                }
-            }
-EOF
+              location / {
+                  try_files \$uri \$uri/ =404;
+              }
+            }' > /etc/nginx/sites-available/default"
 
-            # Set correct permissions (optional)
+            # Set correct permissions
             sudo chmod -R 755 /home/${{ secrets.SERVER_USER }}/Documents/website
 
             # Test and reload Nginx
