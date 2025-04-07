@@ -31,21 +31,28 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASS }}
           script: |
-            echo "${{ secrets.SERVER_PASS }}" | sudo -S apt update
-            echo "${{ secrets.SERVER_PASS }}" | sudo -S apt install nginx -y
+            USER=${{ secrets.SERVER_USER }}
+            PASS=${{ secrets.SERVER_PASS }}
 
-            echo "${{ secrets.SERVER_PASS }}" | sudo -S bash -c "echo 'server {
-              listen 80 default_server;
-              listen [::]:80 default_server;
+            echo "$PASS" | sudo -S apt update
+            echo "$PASS" | sudo -S apt install -y nginx
 
-              root /home/${{ secrets.SERVER_USER }}/Documents/website;
-              index index.html;
+            echo "$PASS" | sudo -S bash -c "cat > /etc/nginx/sites-available/default <<EOF
+            server {
+                listen 80 default_server;
+                listen [::]:80 default_server;
 
-              server_name _;
+                root /home/$USER/Documents/website;
+                index index.html;
 
-              location / {
-                  try_files \$uri \$uri/ =404;
-              }
-            }' > /etc/nginx/sites-available/default"
+                server_name _;
 
-            echo "${{ secrets.SERVER
+                location / {
+                    try_files \$uri \$uri/ =404;
+                }
+            }
+EOF"
+
+            echo "$PASS" | sudo -S chmod -R 755 /home/$USER/Documents/website
+            echo "$PASS" | sudo -S nginx -t
+            echo "$PASS" | sudo -S systemctl reload nginx
