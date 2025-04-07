@@ -22,4 +22,4 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASS }}
           source: "."
-          target: "/documents"  
+          target: "Documents"  
