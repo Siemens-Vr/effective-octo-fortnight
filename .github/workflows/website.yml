@@ -22,4 +22,4 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASS }}
           source: "."
-          target: "/var/www/html"  # Adjust path as per your Linux server setup
+          target: "/var/www/html"  
