@@ -31,14 +31,10 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASS }}
           script: |
-            # Install Nginx if not installed
-            if ! command -v nginx > /dev/null; then
-              sudo apt update
-              sudo apt install nginx -y
-            fi
+            echo "${{ secrets.SERVER_PASS }}" | sudo -S apt update
+            echo "${{ secrets.SERVER_PASS }}" | sudo -S apt install nginx -y
 
-            # Update Nginx default config
-            sudo sh -c "echo 'server {
+            echo "${{ secrets.SERVER_PASS }}" | sudo -S bash -c "echo 'server {
               listen 80 default_server;
               listen [::]:80 default_server;
 
@@ -52,8 +48,4 @@ jobs:
               }
             }' > /etc/nginx/sites-available/default"
 
-            # Set correct permissions
-            sudo chmod -R 755 /home/${{ secrets.SERVER_USER }}/Documents/website
-
-            # Test and reload Nginx
-            sudo nginx -t && sudo systemctl reload nginx
+            echo "${{ secrets.SERVER
